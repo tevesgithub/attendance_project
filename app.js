@@ -1,29 +1,28 @@
-const express = require ('express');
+const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
-require ('dotenv').config();
+const bodyParser = require('body-parser');
+require('dotenv').config();
 const authRoutes = require('./routes/authRoutes.js');
-const studentRoutes = require ('./routes/studentRoutes.js');
-const PORT = process.env.PORT ||  3000;
+const studentRoutes = require('./routes/studentRoutes.js');
+const PORT = process.env.PORT || 3000;
 
-//connect to mongoDB
+
+//Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
-.then(() =>{
-    console.log('Connected to MongoDB Database')
-})
-.catch(err =>{
-    console.log(`Error connecting to database: ${err}`)
-});
+.then(() => { console.log('Connected to MongoDB Database') })
+.catch((err) => { console.log(`Error connecting to database: ${err}`) });
 
-//view engines
+//View engines
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
-//middlewares
+//Middlewares
+app.use(express.json());
+app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static('public'));
 app.use('/', authRoutes);
 app.use('/', studentRoutes);
-
 
 
 app.use((err, res, req, next) =>{
@@ -33,7 +32,8 @@ app.use((err, res, req, next) =>{
 });
 
 
-//start server
+
+//Start server
 app.listen(PORT, () =>{
     console.log(`Connected to port ${PORT}`);
 });
