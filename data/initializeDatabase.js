@@ -1,45 +1,41 @@
 const fs = require('fs');
-const mongoose = require ('mongoose');
-const Student = require ('../models/studentRecord');
+const mongoose = require('mongoose');
+const Student = require('../models/studentRecord'); // Adjust the path to your Student model
 
-//load student data from JSOn file
-async function loadStudentData(){
-
-    return new Promise((resolve,reject) => {     
-    fs.readFile('students.json', 'utf-8', (err,data)  =>{
-        resolve (JSON.parse(data));    
+// Load student data from JSON file
+async function loadStudentData() {
+    return new Promise((resolve, reject) => {
+        fs.readFile('students.json', 'utf8', (err, data) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(JSON.parse(data));
+        });
     });
-});
-
-
 }
 
-
-//Initialize the database
-async function initializeDatabase(){
-    try{
+// Initialize the database
+async function initializeDatabase() {
+    try {
         const students = await loadStudentData();
 
-        for(const student in students){
-                //check to see if the student already exists
-                const existingStudent = await Student.findOne({email: student.email})
+        for (const student of students) {
+            // Check if the student already exists in the database
+            const existingStudent = await Student.findOne({ email: student.email });
 
-        if(!existingStudent){
-            await Student.create(student);
-            console.log (`Student with email ${student.emai} has been inserted`);
-        }else{
-            console.log (`Student with email ${student.emai} already exists`);
-
-
-
+            if (!existingStudent) {
+                // Insert the student if it doesn't exist
+                await Student.create(student);
+                console.log(`Student with email ${student.email} has been inserted.`);
+            } else {
+                console.log(`Student with email ${student.email} already exists.`);
+            }
         }
 
-        }
-    }catch(error){
-
-
+        console.log('Database initialization complete');
+    } catch (err) {
+        console.error('Error initializing database:', err);
     }
-
-    }
+}
 
 module.exports = initializeDatabase;

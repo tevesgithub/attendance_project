@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 const YAML = require('yamljs');
-const initializeDatabase = require('.data/InitializeDatabase');
+const initializeDatabase = require('./data/initializeDatabase');
 const swaggerUI = require('swagger-ui-express');
 const bodyParser = require('body-parser');
 require('dotenv').config();

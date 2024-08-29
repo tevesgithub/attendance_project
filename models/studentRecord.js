@@ -1,22 +1,19 @@
 const mongoose = require('mongoose');
 
 const attendanceSchema = new mongoose.Schema({
-    date:{
+    date: {
         type: Date,
         required: true,
     },
-    status:{
+    status: {
         type: String,
-        enum:['present', 'absent', 'fake excuse'],
+        enum: ['present', 'absent'],
         required: true,
-    }
-
+    },
 });
 
-
-
 const studentRecordSchema = new mongoose.Schema({
-    name:{
+    name: {
         type: String,
         required: true,
     },
@@ -25,18 +22,12 @@ const studentRecordSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    attendance:{
+    attendance: {
         type: [attendanceSchema],
-        default:[],
-    }
-
+        default: [],
+    },
 });
 
+const StudentRecord = mongoose.model('StudentRecord', studentRecordSchema);
 
-
-
-
-
-const studentRecord = mongoose.model('StudentRecord', studentRecordSchema);
-
-module.exports = studentRecord;
+module.exports = StudentRecord;
